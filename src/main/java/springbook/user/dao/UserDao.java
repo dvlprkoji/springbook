@@ -4,7 +4,7 @@ import springbook.user.domain.User;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = getConnection();
@@ -42,11 +42,22 @@ public class UserDao {
         return user;
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/springbook", "springbook", "Springbook!");
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 
-        return c;
+    public class NUserDao extends UserDao {
+        @Override
+        public Connection getConnection() throws ClassNotFoundException, SQLException {
+            // N사 DB connection 생성 코드
+            return null;
+        }
     }
+
+    public class DUserDao extends UserDao {
+        @Override
+        public Connection getConnection() throws ClassNotFoundException, SQLException {
+            // D사 DB connection 생성 코드
+            return null;
+        }
+    }
+
 }
