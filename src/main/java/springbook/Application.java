@@ -1,6 +1,7 @@
 package springbook;
 
 import springbook.user.dao.DConnectionMaker;
+import springbook.user.dao.DaoFactory;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
@@ -10,9 +11,8 @@ public class Application {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        DConnectionMaker connectionMaker = new DConnectionMaker();
+        UserDao dao = new DaoFactory().userDao();
 
-        UserDao dao = new UserDao(connectionMaker);
         User user = new User();
         user.setId("koji");
         user.setName("안재홍");
