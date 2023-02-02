@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class UserDaoTest {
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException {
 
         GenericXmlApplicationContext context = new GenericXmlApplicationContext("springbook/user/dao/applicationContext.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);
