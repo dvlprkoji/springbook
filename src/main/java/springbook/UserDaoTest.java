@@ -1,14 +1,20 @@
 package springbook;
 
+import org.junit.Test;
+import org.junit.runners.JUnit4;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 public class UserDaoTest {
 
-    public static void main(String[] args) throws SQLException {
+    @Test
+    public void addAndGet() throws SQLException {
 
         GenericXmlApplicationContext context = new GenericXmlApplicationContext("/applicationContext.xml");
         UserDao dao = context.getBean("userDao", UserDao.class);
@@ -20,16 +26,9 @@ public class UserDaoTest {
 
         dao.add(user);
 
-        System.out.println(user.getId() + " 등록 성공");
-
         User user2 = dao.get(user.getId());
 
-        if (!user.getName().equals(user2.getName())) {
-            System.out.println("테스트 실패 (name)");
-        } else if (!user.getPassword().equals(user2.getPassword())) {
-            System.out.println("테스트 실패 (password)");
-        } else {
-            System.out.println("조회 테스트 성공");
-        }
+        assertThat(user.getName(), is(user2.getName()));
+        assertThat(user.getPassword(), is(user2.getPassword()));
     }
 }
