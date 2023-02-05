@@ -2,6 +2,7 @@ package springbook;
 
 import org.junit.Test;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
@@ -35,5 +36,16 @@ public class UserDaoTest {
         User userget2 = dao.get(user2.getId());
         assertThat(userget2.getName(), is(user2.getName()));
         assertThat(userget2.getPassword(), is(user2.getPassword()));
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void getUserFailure() throws SQLException {
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext("/applicationContext.xml");
+
+        UserDao dao = context.getBean("userDao", UserDao.class);
+        dao.deleteAll();
+        assertThat(dao.getCount(), is(0));
+
+        dao.get("unknown_id");
     }
 }
