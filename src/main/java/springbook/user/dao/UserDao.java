@@ -7,7 +7,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 
 
-public class UserDao {
+public abstract class UserDao {
 
     private javax.sql.DataSource dataSource;
 
@@ -60,7 +60,7 @@ public class UserDao {
 
         try {
             c = dataSource.getConnection();
-            ps = c.prepareStatement("delete from users");
+            ps = makeStatement(c);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
@@ -115,5 +115,7 @@ public class UserDao {
             }
         }
     }
+
+    abstract protected PreparedStatement makeStatement(Connection c) throws SQLException;
 
 }
