@@ -31,6 +31,7 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException {
+
         Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
@@ -71,7 +72,6 @@ public class UserDao {
                 }
             }
             if (c != null) {
-                c.close();
                 try {
                     c.close();
                 } catch (SQLException e) {
@@ -81,19 +81,39 @@ public class UserDao {
     }
 
     public int getCount() throws SQLException {
-        Connection c = dataSource.getConnection();
 
-        PreparedStatement ps = c.prepareStatement("select count(*) from users");
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        int count = rs.getInt(1);
+        try {
+            c = dataSource.getConnection();
+            ps = c.prepareStatement("select count(*) from users");
+            rs = ps.executeQuery();
 
-        rs.close();
-        ps.close();
-        c.close();
-
-        return count;
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (rs != null) {
+                try{
+                    rs.close();
+                } catch(SQLException e){
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
+            }
+            if (c != null) {
+                try{
+                    rs.close();
+                } catch(SQLException e){
+                }
+            }
+        }
     }
 
 }
