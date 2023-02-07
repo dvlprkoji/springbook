@@ -14,4 +14,5 @@
     <bean id="userDao" class="springbook.user.dao.UserDao">
         <property name="dataSource" ref="dataSource" />
     </bean>
+
 </beans>
