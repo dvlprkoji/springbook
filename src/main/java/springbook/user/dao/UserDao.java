@@ -20,16 +20,7 @@ public class UserDao {
     }
 
     public void add(User user) throws SQLException {
-        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
-                return ps;
-            }
-        });
+        jdbcContext.insert("users", user.getId(), user.getName(), user.getPassword());
     }
 
     public User get(String id) throws SQLException {
@@ -57,7 +48,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        executeSql("delete from users");
+        jdbcContext.executeSql("delete from users");
     }
 
     public void executeSql(String query) throws SQLException {
@@ -79,7 +70,7 @@ public class UserDao {
             c = dataSource.getConnection();
             ps = c.prepareStatement("select count(*) from users");
             rs = ps.executeQuery();
-
+            rs.next();
             return rs.getInt(1);
         } catch (SQLException e) {
             throw e;
