@@ -31,4 +31,9 @@ public class CalcSumTest {
     public void multiplyOfNumbers() throws IOException {
         assertThat(calculator.calcMultiply(numFilepath), is(24));
     }
+
+    @Test
+    public void concatenate() throws IOException {
+        assertThat(calculator.concatenate(numFilepath), is("1234"));
+    }
 }

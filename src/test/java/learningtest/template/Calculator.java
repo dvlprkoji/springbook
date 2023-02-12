@@ -45,4 +45,15 @@ public class Calculator {
             }};
         return lineReadTemplate(filepath, callback, 1);
     }
+
+    public String concatenate(String filepath) throws IOException {
+        LineCallback<String> callback = new LineCallback<String>() {
+            @Override
+            public String doSomethingWithLine(String line, String val) {
+                return val + line;
+            }
+        };
+
+        return lineReadTemplate(filepath, callback, "");
+    }
 }
