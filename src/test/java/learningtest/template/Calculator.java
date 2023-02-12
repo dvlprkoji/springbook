@@ -6,28 +6,11 @@ import java.io.IOException;
 
 public class Calculator {
 
-    public Integer fileReadTemplate(String filepath, BufferedReaderCallback callback) throws IOException {
+    public <T> T lineReadTemplate(String filepath, LineCallback<T> callback, T initVal) throws IOException {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(filepath));
-            int ret = callback.doSomethingWithReader(br);
-            return ret;
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            throw e;
-        } finally {
-            if (br != null) {
-                try { br.close();}
-                catch (IOException e) { System.out.println(e.getMessage());}
-            }
-        }
-    }
-
-    public Integer lineReadTemplate(String filepath, LineCallback callback, int initVal) throws IOException {
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(filepath));
-            Integer res = initVal;
+            T res = initVal;
             String line = null;
             while ((line = br.readLine()) != null) {
                 res = callback.doSomethingWithLine(line, res);
@@ -46,19 +29,19 @@ public class Calculator {
 
 
     public int calcSum(String filepath) throws IOException {
-        LineCallback callback = new LineCallback() {
+        LineCallback callback = new LineCallback<Integer>() {
             @Override
-            public int doSomethingWithLine(String line, Integer initVal) {
-                return initVal + Integer.parseInt(line);
+            public Integer doSomethingWithLine(String line, Integer val) {
+                return val + Integer.parseInt(line);
             }};
         return lineReadTemplate(filepath, callback, 0);
     }
 
     public Integer calcMultiply(String filepath) throws IOException {
-        LineCallback callback = new LineCallback() {
+        LineCallback callback = new LineCallback<Integer>() {
             @Override
-            public int doSomethingWithLine(String line, Integer initVal) {
-                return initVal *= Integer.parseInt(line);
+            public Integer doSomethingWithLine(String line, Integer val) {
+                return val *= Integer.parseInt(line);
             }};
         return lineReadTemplate(filepath, callback, 1);
     }
