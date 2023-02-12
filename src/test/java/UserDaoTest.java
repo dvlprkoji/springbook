@@ -10,6 +10,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -24,6 +25,7 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
+
     }
 
     @Test
@@ -55,5 +57,38 @@ public class UserDaoTest {
         assertThat(dao.getCount(), is(0));
 
         dao.get("unknown_id");
+    }
+
+    @Test
+    public void getAll() throws SQLException {
+        dao.deleteAll();
+
+        User user1 = new User("koji", "안재홍", "passw0rd");
+        User user2 = new User("king", "안재콩", "Passw0rd!");
+        User user3 = new User("god", "안잭콩", "Passw0rd1!");
+
+
+        dao.add(user1);
+        List<User> users1 = dao.getAll();
+        assertThat(users1.size(), is(1));
+        checkSameUser(user1, dao.get("koji"));
+
+        dao.add(user2);
+        List<User> users2 = dao.getAll();
+        assertThat(users2.size(), is(2));
+        checkSameUser(user2, dao.get("king"));
+
+        dao.add(user3);
+        List<User> users3 = dao.getAll();
+        assertThat(users3.size(), is(3));
+        checkSameUser(user3, dao.get("god"));
+
+
+    }
+
+    private void checkSameUser(User user1, User user2) {
+        assertThat(user1.getId(), is(user1.getId()));
+        assertThat(user1.getName(), is(user1.getName()));
+        assertThat(user1.getPassword(), is(user1.getPassword()));
     }
 }

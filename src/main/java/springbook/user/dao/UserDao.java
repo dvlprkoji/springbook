@@ -1,98 +1,62 @@
 package springbook.user.dao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 
 
 public class UserDao {
 
-    private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
     private javax.sql.DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
-        this.jdbcContext = new JdbcContext();
-        this.jdbcContext.setDataSource(dataSource);
+        jdbcTemplate = new JdbcTemplate(dataSource);
 
         this.dataSource = dataSource;
     }
 
     public void add(User user) throws SQLException {
-        jdbcContext.insert("users", user.getId(), user.getName(), user.getPassword());
+        jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)", user.getId(), user.getName(), user.getPassword());
     }
 
     public User get(String id) throws SQLException {
-
-        Connection c = dataSource.getConnection();
-
-        PreparedStatement ps = c.prepareStatement(
-                "select * from users where id = ?");
-        ps.setString(1, id);
-
-        ResultSet rs = ps.executeQuery();
-
-        User user = null;
-        if (rs.next()) {
-            user = new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
-        }
-
-        rs.close();
-        ps.close();
-        c.close();
-
-        if(user == null) throw new EmptyResultDataAccessException(1);
-
-        return user;
+        return jdbcTemplate.queryForObject(
+            "select * from users where id = ?",
+                new Object[] {id},
+                new RowMapper<User>() {
+                    @Override
+                    public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                        return new User(
+                                resultSet.getString("id"),
+                                resultSet.getString("name"),
+                                resultSet.getString("password"));
+                    }
+        });
     }
 
-    public void deleteAll() throws SQLException {
-        jdbcContext.executeSql("delete from users");
-    }
-
-    public void executeSql(String query) throws SQLException {
-        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
+    public List<User> getAll() {
+        return jdbcTemplate.query("select * from users", new RowMapper<User>() {
             @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                return c.prepareStatement(query);
+            public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                return new User(
+                        resultSet.getString("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("password")
+                );
             }
         });
     }
 
+    public void deleteAll() throws SQLException {
+        jdbcTemplate.execute("delete from users");
+    }
+
     public int getCount() throws SQLException {
-
-        Connection c = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            c = dataSource.getConnection();
-            ps = c.prepareStatement("select count(*) from users");
-            rs = ps.executeQuery();
-            rs.next();
-            return rs.getInt(1);
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (rs != null) {
-                try{
-                    rs.close();
-                } catch(SQLException e){
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (c != null) {
-                try{
-                    rs.close();
-                } catch(SQLException e){
-                }
-            }
-        }
+        return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
     }
 }
