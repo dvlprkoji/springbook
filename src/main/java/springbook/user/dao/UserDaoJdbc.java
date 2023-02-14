@@ -2,6 +2,7 @@ package springbook.user.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -21,7 +22,8 @@ public class UserDaoJdbc implements UserDao{
     }
 
     public void add(User user){
-        jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)", user.getId(), user.getName(), user.getPassword());
+        jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
     public User get(String id){
@@ -34,7 +36,11 @@ public class UserDaoJdbc implements UserDao{
                         return new User(
                                 resultSet.getString("id"),
                                 resultSet.getString("name"),
-                                resultSet.getString("password"));
+                                resultSet.getString("password"),
+                                Level.valueOf(resultSet.getInt("level")),
+                                resultSet.getInt("login"),
+                                resultSet.getInt("recommend")
+                        );
                     }
         });
     }
@@ -46,7 +52,10 @@ public class UserDaoJdbc implements UserDao{
                 return new User(
                         resultSet.getString("id"),
                         resultSet.getString("name"),
-                        resultSet.getString("password")
+                        resultSet.getString("password"),
+                        Level.valueOf(resultSet.getInt("level")),
+                        resultSet.getInt("login"),
+                        resultSet.getInt("recommend")
                 );
             }
         });
@@ -58,5 +67,13 @@ public class UserDaoJdbc implements UserDao{
 
     public int getCount(){
         return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
+    }
+
+    @Override
+    public void update(User user) {
+        jdbcTemplate.update(
+                "update users set name = ?, password = ?, level = ?, login = ?, recommend = ?",
+                user.getName(), user.getPassword(), user.getLevel(), user.getLogin(), user.getRecommend()
+        );
     }
 }
