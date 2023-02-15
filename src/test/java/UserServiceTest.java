@@ -38,7 +38,7 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         users = Arrays.asList(
-                new User("koji1", "코지1", "p1", Level.BASIC, 49, 0),
+                new User("koji1", "코지1", "p1", null, 49, 0),
                 new User("koji2", "코지2", "p2", Level.BASIC, 50, 0),
                 new User("koji3", "코지3", "p3", Level.SILVER, 60, 29),
                 new User("koji4", "코지4", "p4", Level.SILVER, 60, 30),
@@ -58,6 +58,23 @@ public class UserServiceTest {
         checkLevel(users.get(2), Level.SILVER);
         checkLevel(users.get(3), Level.GOLD);
         checkLevel(users.get(4), Level.GOLD);
+    }
+
+    @Test
+    public void add() {
+        userDao.deleteAll();
+
+        User userWithLevel = users.get(4);
+        User userWithoutLevel = users.get(0);
+
+        userService.add(userWithLevel);
+        userService.add(userWithoutLevel);
+
+        User userWithLevelRead = userDao.get(userWithLevel.getId());
+        User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
+
+        assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
+        assertThat(userWithoutLevelRead.getLevel(), is(userWithoutLevel.getLevel()));
     }
 
     private void checkLevel(User user, Level expectedLevel) {
