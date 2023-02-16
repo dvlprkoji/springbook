@@ -17,6 +17,10 @@
 
     <bean id="userService" class="springbook.user.service.UserService">
         <property name="userDao" ref="userDao"/>
+        <property name="userLevelUpgradePolicy" ref="userLevelUpgradeEventPolicy"/>
+    </bean>
+
+    <bean id="userLevelUpgradeEventPolicy" class="springbook.user.dao.UserLevelUpgradeEventPolicy">
     </bean>
 
 </beans>
