@@ -5,6 +5,8 @@ import springbook.user.dao.UserLevelUpgradePolicy;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class UserService {
@@ -22,16 +24,37 @@ public class UserService {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
     }
 
-    public void upgradeLevels() {
-        List<User> users = userDao.getAll();
-        for (User user : users) {
-            if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
-                upgradeLevel(user);
-            }
+//    public void upgradeLevels() {
+//        List<User> users = userDao.getAll();
+//        for (User user : users) {
+//            if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
+//                upgradeLevel(user);
+//            }
+//        }
+//    }
+//    protected void upgradeLevel(User user) {
+//        user.upgradeLevel();
+//        userDao.update(user);
+//    }
+
+    public void upgradeLevels() throws SQLException {
+        Connection c = null;
+        User user = null;
+        // ...
+
+        c.setAutoCommit(false); // Auto-Commit 해제
+        try {
+            // ...
+            upgradeLevel(c, user);
+            // ...
+        } catch (SQLException e) {
+            c.rollback();
+            throw e;
         }
+        // ...
     }
 
-    protected void upgradeLevel(User user) {
+    protected void upgradeLevel(Connection c, User user) throws SQLException{
         user.upgradeLevel();
         userDao.update(user);
     }
