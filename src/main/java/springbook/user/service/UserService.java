@@ -1,5 +1,6 @@
 package springbook.user.service;
 
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,6 +18,7 @@ public class UserService {
     UserDao userDao;
     UserLevelUpgradePolicy userLevelUpgradePolicy;
     PlatformTransactionManager transactionManager;
+    MailSender mailSender;
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
@@ -33,6 +35,10 @@ public class UserService {
         this.transactionManager = transactionManager;
     }
 
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
+
     protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
@@ -40,9 +46,6 @@ public class UserService {
     }
 
     private void sendUpgradeEMail(User user) {
-
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());

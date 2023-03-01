@@ -22,10 +22,14 @@
     <bean id="userLevelUpgradeEventPolicy" class="springbook.user.dao.UserLevelUpgradeBasicPolicy">
     </bean>
 
+    <bean id="mailSender" class="springbook.user.service.DummyMailSender">
+    </bean>
+
     <bean id="userService" class="springbook.user.service.UserService">
         <property name="userDao" ref="userDao"/>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradeEventPolicy"/>
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="mailSender" ref="mailSender"/>
     </bean>
 
 </beans>
