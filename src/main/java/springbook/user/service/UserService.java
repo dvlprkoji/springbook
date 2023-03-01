@@ -1,5 +1,6 @@
 package springbook.user.service;
 
+import javafx.application.Platform;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -20,6 +21,7 @@ public class UserService {
     UserDao userDao;
     DataSource dataSource;
     UserLevelUpgradePolicy userLevelUpgradePolicy;
+    PlatformTransactionManager transactionManager;
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
@@ -36,14 +38,10 @@ public class UserService {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
     }
 
-//    public void upgradeLevels() {
-//        List<User> users = userDao.getAll();
-//        for (User user : users) {
-//            if (userLevelUpgradePolicy.canUpgradeLevel(user)) {
-//                upgradeLevel(user);
-//            }
-//        }
-//    }
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
     protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
@@ -51,7 +49,6 @@ public class UserService {
 
     public void upgradeLevels() throws RuntimeException {
 
-        PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
