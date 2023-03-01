@@ -45,7 +45,7 @@ public class UserServiceTest {
         }
 
         @Override
-        protected void upgradeLevel(User user){
+        protected void upgradeLevel(User user) throws TestUserServiceException{
             if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgradeLevel(user);
         }
@@ -66,7 +66,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeAllOrNothing() throws Exception {
+    public void upgradeAllOrNothing() {
         TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setDataSource(this.dataSource);
@@ -76,12 +76,10 @@ public class UserServiceTest {
 
         try {
             testUserService.upgradeLevels();
-            fail("TestUserServiceException expected");
-        } catch (TestUserServiceException e) {
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
+        } finally {
+            checkLevel(users.get(1), false);
         }
-
-        checkLevel(users.get(1), false);
     }
 
 

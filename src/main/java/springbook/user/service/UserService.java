@@ -49,7 +49,7 @@ public class UserService {
         userDao.update(user);
     }
 
-    public void upgradeLevels() throws SQLException {
+    public void upgradeLevels() throws RuntimeException {
 
         PlatformTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
