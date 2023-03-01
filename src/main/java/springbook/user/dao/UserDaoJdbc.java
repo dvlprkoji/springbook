@@ -13,17 +13,14 @@ import java.util.List;
 public class UserDaoJdbc implements UserDao{
 
     private JdbcTemplate jdbcTemplate;
-    private javax.sql.DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-
-        this.dataSource = dataSource;
     }
 
     public void add(User user){
-        jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
-                user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+        jdbcTemplate.update("insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
     public User get(String id){
@@ -37,6 +34,7 @@ public class UserDaoJdbc implements UserDao{
                                 resultSet.getString("id"),
                                 resultSet.getString("name"),
                                 resultSet.getString("password"),
+                                resultSet.getString("email"),
                                 Level.valueOf(resultSet.getInt("level")),
                                 resultSet.getInt("login"),
                                 resultSet.getInt("recommend")
@@ -53,6 +51,7 @@ public class UserDaoJdbc implements UserDao{
                         resultSet.getString("id"),
                         resultSet.getString("name"),
                         resultSet.getString("password"),
+                        resultSet.getString("email"),
                         Level.valueOf(resultSet.getInt("level")),
                         resultSet.getInt("login"),
                         resultSet.getInt("recommend")
@@ -72,8 +71,8 @@ public class UserDaoJdbc implements UserDao{
     @Override
     public void update(User user) {
         jdbcTemplate.update(
-                "update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ?",
-                user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
+                "update users set name = ?, password = ?, email = ?,  level = ?, login = ?, recommend = ? where id = ?",
+                user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId()
         );
     }
 }

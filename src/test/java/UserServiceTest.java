@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 
@@ -60,11 +59,11 @@ public class UserServiceTest {
     @Before
     public void setUp() {
         users = Arrays.asList(
-                new User("koji1", "코지1", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0),
-                new User("koji2", "코지2", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
-                new User("koji3", "코지3", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD-1),
-                new User("koji4", "코지4", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
-                new User("koji5", "코지5", "p5", Level.GOLD, 100, Integer.MAX_VALUE)
+                new User("koji1", "코지1", "p1", "koji@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0),
+                new User("koji2", "코지2", "p2", "koji@gmail.com", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0),
+                new User("koji3", "코지3", "p3", "koji@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD-1),
+                new User("koji4", "코지4", "p4", "koji@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+                new User("koji5", "코지5", "p5", "koji@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
         );
     }
 
