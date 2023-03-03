@@ -2,7 +2,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,6 +17,7 @@ import springbook.user.service.UserService;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,6 +62,24 @@ public class UserServiceTest {
     static class TestUserServiceException extends RuntimeException {
     }
 
+    static class MockMailSender implements MailSender {
+
+        private List<String> request = new ArrayList<String>();
+
+        public List<String> getRequest() {
+            return request;
+        }
+
+        @Override
+        public void send(SimpleMailMessage mailMessage) throws MailException {
+            request.add(mailMessage.getTo()[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... mailMessages) throws MailException {
+        }
+    }
+
     @Before
     public void setUp() {
         users = Arrays.asList(
@@ -98,9 +119,12 @@ public class UserServiceTest {
 
 
     @Test
-    public void upgradeLevels() throws SQLException {
+    public void upgradeLevels() throws Exception {
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
 
         userService.upgradeLevels();
 
@@ -109,6 +133,11 @@ public class UserServiceTest {
         checkLevel(users.get(2), false);
         checkLevel(users.get(3), true);
         checkLevel(users.get(4), false);
+
+        List<String> request = mockMailSender.getRequest();
+        assertThat(request.size(), is(2));
+        assertThat(request.get(0), is(users.get(1).getEmail()));
+        assertThat(request.get(1), is(users.get(3).getEmail()));
     }
 
     private void checkLevel(User user, boolean upgraded) {
