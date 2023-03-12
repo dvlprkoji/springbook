@@ -14,6 +14,7 @@ import springbook.user.dao.UserLevelUpgradeBasicPolicy;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
 import springbook.user.service.UserServiceImpl;
+import springbook.user.service.UserServiceTx;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
@@ -43,11 +45,11 @@ public class UserServiceImplTest {
 
     List<User> users;
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl {
 
         private String id;
 
-        private TestUserServiceImpl(String id) {
+        private TestUserService(String id) {
             this.id = id;
         }
 
@@ -92,16 +94,21 @@ public class UserServiceImplTest {
 
     @Test
     public void upgradeAllOrNothing() {
-        TestUserServiceImpl testUserService = new TestUserServiceImpl(users.get(3).getId());
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(this.transactionManager);
         testUserService.setUserLevelUpgradePolicy(new UserLevelUpgradeBasicPolicy());
         testUserService.setMailSender(mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setTransactionManager(transactionManager);
+        txUserService.setUserService(testUserService);
+
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try {
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
         } catch (RuntimeException e) {
         } finally {
             checkLevel(users.get(1), false);
