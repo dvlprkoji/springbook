@@ -17,7 +17,6 @@ public class UserServiceImpl implements UserService{
 
     UserDao userDao;
     UserLevelUpgradePolicy userLevelUpgradePolicy;
-    PlatformTransactionManager transactionManager;
     MailSender mailSender;
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
@@ -29,10 +28,6 @@ public class UserServiceImpl implements UserService{
 
     public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
-    }
-
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
     }
 
     public void setMailSender(MailSender mailSender) {
