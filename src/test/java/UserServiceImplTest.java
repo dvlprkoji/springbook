@@ -15,10 +15,13 @@ import springbook.user.dao.UserDao;
 import springbook.user.dao.UserLevelUpgradeBasicPolicy;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
+import springbook.user.service.TransactionHandler;
+import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 import springbook.user.service.UserServiceTx;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -148,15 +151,22 @@ public class UserServiceImplTest {
         testUserService.setUserLevelUpgradePolicy(new UserLevelUpgradeBasicPolicy());
         testUserService.setMailSender(mailSender);
 
-        UserServiceTx txUserService = new UserServiceTx();
-        txUserService.setTransactionManager(transactionManager);
-        txUserService.setUserService(testUserService);
+        TransactionHandler transactionHandler = new TransactionHandler();
+        transactionHandler.setTarget(testUserService);
+        transactionHandler.setPattern("upgradeLevels");
+        transactionHandler.setTransactionManager(transactionManager);
+
+        UserService proxiedUserService = (UserService) Proxy.newProxyInstance(
+                this.getClass().getClassLoader(),
+                new Class[]{UserService.class},
+                transactionHandler
+        );
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try {
-            txUserService.upgradeLevels();
+            proxiedUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (RuntimeException e) {
         } finally {
