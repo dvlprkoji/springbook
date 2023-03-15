@@ -2,7 +2,9 @@ package learningtest.jdk;
 
 import org.junit.Test;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -56,6 +58,37 @@ public class ReflectionTest {
             return hello.sayThankYou(name).toUpperCase(Locale.ROOT);
         }
     }
+
+    public class UpperCaseHandler implements InvocationHandler {
+
+        Hello target;
+
+        public UpperCaseHandler(Hello target) {
+            this.target = target;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            String ret = (String) method.invoke(target, args);
+            return ret.toUpperCase(Locale.ROOT);
+        }
+    }
+
+    @Test
+    public void InvocationHandlerTest() throws Exception {
+
+        Hello proxiedHello = (Hello) Proxy.newProxyInstance(
+                getClass().getClassLoader(),                        // 다이나믹 프록시가 정의되는 클래스 로더
+                new Class[]{Hello.class},                           // 다이나믹 프록시가 구현할 클래스
+                new UpperCaseHandler(new HelloTarget())             // InvocationHandler 구현체
+        );
+
+        assertThat(proxiedHello.sayHello("Koji"), is("HELLO KOJI"));
+        assertThat(proxiedHello.sayHi("Koji"), is("HI KOJI"));
+        assertThat(proxiedHello.sayThankYou("Koji"), is("THANK YOU KOJI"));
+    }
+
+
 
 
     @Test
