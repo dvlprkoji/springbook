@@ -30,5 +30,5 @@
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
-
+    
 </beans>

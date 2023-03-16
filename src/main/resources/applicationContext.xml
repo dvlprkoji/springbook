@@ -28,7 +28,6 @@
     <bean id="userServiceImpl" class="springbook.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradeEventPolicy"/>
-        <property name="transactionManager" ref="transactionManager"/>
         <property name="mailSender" ref="mailSender"/>
     </bean>
 
@@ -36,5 +35,6 @@
         <property name="transactionManager" ref="transactionManager"/>
         <property name="userService" ref="userServiceImpl"/>
     </bean>
+
 
 </beans>
