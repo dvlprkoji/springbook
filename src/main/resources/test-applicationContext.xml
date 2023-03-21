@@ -25,10 +25,4 @@
     <bean id="mailSender" class="springbook.user.service.DummyMailSender">
     </bean>
 
-    <bean id="userService" class="springbook.user.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradePolicy"/>
-        <property name="mailSender" ref="mailSender"/>
-    </bean>
-    
 </beans>

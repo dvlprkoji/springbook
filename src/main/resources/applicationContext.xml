@@ -36,5 +36,11 @@
         <property name="userService" ref="userServiceImpl"/>
     </bean>
 
+    <bean id="userService" class="springbook.user.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="springbook.user.service.UserService"/>
+    </bean>
 
 </beans>
