@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -15,10 +16,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.dao.UserLevelUpgradeBasicPolicy;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
-import springbook.user.service.TransactionHandler;
-import springbook.user.service.UserService;
-import springbook.user.service.UserServiceImpl;
-import springbook.user.service.UserServiceTx;
+import springbook.user.service.*;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Proxy;
@@ -49,6 +47,8 @@ public class UserServiceImplTest {
     PlatformTransactionManager transactionManager;
     @Autowired
     MailSender mailSender;
+    @Autowired
+    ApplicationContext context;
 
     List<User> users;
 
@@ -145,28 +145,27 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void upgradeAllOrNothing() {
+    @DirtiesContext
+    public void upgradeAllOrNothing() throws Exception {
+
         TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setUserLevelUpgradePolicy(new UserLevelUpgradeBasicPolicy());
         testUserService.setMailSender(mailSender);
 
-        TransactionHandler transactionHandler = new TransactionHandler();
-        transactionHandler.setTarget(testUserService);
-        transactionHandler.setPattern("upgradeLevels");
-        transactionHandler.setTransactionManager(transactionManager);
+        TxProxyFactoryBean txProxyFactoryBean = new TxProxyFactoryBean();
+        txProxyFactoryBean.setTransactionManager(transactionManager);
+        txProxyFactoryBean.setPattern("upgradeLevels");
+        txProxyFactoryBean.setTarget(testUserService);
+        txProxyFactoryBean.setServiceInterface(UserService.class);
 
-        UserService proxiedUserService = (UserService) Proxy.newProxyInstance(
-                this.getClass().getClassLoader(),
-                new Class[]{UserService.class},
-                transactionHandler
-        );
+        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
         userDao.deleteAll();
         for(User user : users) userDao.add(user);
 
         try {
-            proxiedUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (RuntimeException e) {
         } finally {
@@ -193,12 +192,14 @@ public class UserServiceImplTest {
         MockMailSender mockMailSender = new MockMailSender();
         userServiceImpl.setMailSender(mockMailSender);
 
+        userServiceImpl.setUserLevelUpgradePolicy(new UserLevelUpgradeBasicPolicy());
+
         userServiceImpl.upgradeLevels();
 
         List<User> updated = mockUserDao.getUpdated();
         assertThat(updated.size(), is(2));
-        checkUserAndLevel(updated.get(0), "koji1", Level.SILVER);
-        checkUserAndLevel(updated.get(1), "koji2", Level.GOLD);
+        checkUserAndLevel(updated.get(0), "koji2", Level.SILVER);
+        checkUserAndLevel(updated.get(1), "koji4", Level.GOLD);
 
         List<String> request = mockMailSender.getRequest();
         assertThat(request.size(), is(2));
@@ -216,6 +217,8 @@ public class UserServiceImplTest {
 
         MailSender mockMailSender = mock(MailSender.class);
         userServiceImpl.setMailSender(mockMailSender);
+
+        userServiceImpl.setUserLevelUpgradePolicy(new UserLevelUpgradeBasicPolicy());
 
         userServiceImpl.upgradeLevels();
 
