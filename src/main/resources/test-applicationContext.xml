@@ -31,12 +31,26 @@
         <property name="userDao" ref="userDao"/>
     </bean>
 
+    <bean id="transactionAdvice" class="springbook.user.service.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
 
-<!--    <bean id="userService" class="springbook.user.service.TxProxyFactoryBean">-->
-<!--        <property name="pattern" value=""/>-->
-<!--        <property name="target" ref="userServiceImpl"/>-->
-<!--        <property name="serviceInterface" value="springbook.user.service.UserService"/>-->
-<!--        <property name="transactionManager" ref="transactionManager"/>-->
-<!--    </bean>-->
+    <bean id="pointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+        <property name="mappedName" value="upgradeLevels"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="pointcut"/>
+    </bean>
+
+    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="userServiceImpl"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionAdvisor</value>
+            </list>
+        </property>
+    </bean>
 
 </beans>

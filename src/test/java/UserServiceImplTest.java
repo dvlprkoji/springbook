@@ -3,6 +3,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -153,12 +155,9 @@ public class UserServiceImplTest {
         testUserService.setUserLevelUpgradePolicy(new UserLevelUpgradeBasicPolicy());
         testUserService.setMailSender(mailSender);
 
-        TxProxyFactoryBean txProxyFactoryBean = new TxProxyFactoryBean();
-        txProxyFactoryBean.setTransactionManager(transactionManager);
-        txProxyFactoryBean.setPattern("upgradeLevels");
-        txProxyFactoryBean.setTarget(testUserService);
-        txProxyFactoryBean.setServiceInterface(UserService.class);
+        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
 
+        txProxyFactoryBean.setTarget(testUserService);
         UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
         userDao.deleteAll();
