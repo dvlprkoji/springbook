@@ -25,37 +25,27 @@
     <bean id="mailSender" class="springbook.user.service.DummyMailSender">
     </bean>
 
-    <bean id="userServiceImpl" class="springbook.user.service.UserServiceImpl">
+    <bean id="userService" class="springbook.user.service.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="userLevelUpgradePolicy" ref="userLevelUpgradeEventPolicy"/>
         <property name="mailSender" ref="mailSender"/>
-    </bean>
-
-    <bean id="userServiceTx" class="springbook.user.service.UserServiceTx">
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="userService" ref="userServiceImpl"/>
     </bean>
 
     <bean id="transactionAdvice" class="springbook.user.service.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="pointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
-        <property name="mappedName" value="upgradeLevels"/>
+    <bean id="transactionPointcut" class="springbook.user.service.NameMatchClassMethodPointcut">
+        <property name="mappedClassName" value="*ServiceImpl"/>
+        <property name="mappedName" value="upgrade*"/>
     </bean>
 
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
         <property name="advice" ref="transactionAdvice"/>
-        <property name="pointcut" ref="pointcut"/>
+        <property name="pointcut" ref="transactionPointcut"/>
     </bean>
 
-    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="userServiceImpl"/>
-        <property name="interceptorNames">
-            <list>
-                <value>transactionAdvisor</value>
-            </list>
-        </property>
-    </bean>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"></bean>
+
 
 </beans>
