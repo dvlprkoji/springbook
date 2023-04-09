@@ -2,10 +2,6 @@ package springbook.user.service;
 
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserLevelUpgradePolicy;
 import springbook.user.domain.Level;
@@ -68,5 +64,26 @@ public class UserServiceImpl implements UserService{
             user.setLevel(Level.BASIC);
         }
         userDao.add(user);
+    }
+
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+
+    @Override
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
     }
 }

@@ -118,13 +118,21 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl {
 
         private String id = "koji4";
 
         protected void upgradeLevel(User user) {
-            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgradeLevel(user);
+        }
+
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.update(user);
+            }
+            return null;
         }
     }
 
@@ -140,7 +148,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
     public void upgradeAllOrNothing() throws Exception {
 
         userDao.deleteAll();
@@ -155,14 +162,15 @@ public class UserServiceTest {
         }
     }
 
-
+    @Test
+    public void readOnlyTransactionAttribute() {
+        testUserService.getAll();
+    }
 
     @Test
     public void bean() {
         assertThat(this.userService, is(notNullValue()));
     }
-
-
 
     @Test
     public void upgradeLevels() throws Exception {
