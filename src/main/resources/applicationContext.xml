@@ -43,15 +43,6 @@
     <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService" parent="userService">
     </bean>
 
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-    </aop:config>
+    <tx:annotation-driven></tx:annotation-driven>
 
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="get*" read-only="true"/>
-            <tx:method name="*" />
-        </tx:attributes>
-    </tx:advice>
-    
 </beans>

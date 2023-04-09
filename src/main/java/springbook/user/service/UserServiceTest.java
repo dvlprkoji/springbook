@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -162,7 +163,7 @@ public class UserServiceTest {
         }
     }
 
-    @Test
+    @Test(expected = TransientDataAccessResourceException.class)
     public void readOnlyTransactionAttribute() {
         testUserService.getAll();
     }
