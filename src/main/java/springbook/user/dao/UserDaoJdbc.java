@@ -12,6 +12,12 @@ import java.util.List;
 
 public class UserDaoJdbc implements UserDao{
 
+    private String sqlAdd;
+
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
+
     private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {
@@ -19,7 +25,9 @@ public class UserDaoJdbc implements UserDao{
     }
 
     public void add(User user){
-        jdbcTemplate.update("insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)",
+        jdbcTemplate.update(
+                sqlAdd,
+//                "insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)",
                 user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
