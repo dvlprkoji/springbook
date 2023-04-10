@@ -8,14 +8,15 @@ import springbook.user.domain.User;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 
 
 public class UserDaoJdbc implements UserDao{
 
-    private String sqlAdd;
+    private Map<String, String> sqlMap;
 
-    public void setSqlAdd(String sqlAdd) {
-        this.sqlAdd = sqlAdd;
+    public void setSqlMap(Map<String, String> sqlMap) {
+        this.sqlMap = sqlMap;
     }
 
     private JdbcTemplate jdbcTemplate;
@@ -26,7 +27,7 @@ public class UserDaoJdbc implements UserDao{
 
     public void add(User user){
         jdbcTemplate.update(
-                sqlAdd,
+                sqlMap.get("add"),
 //                "insert into users(id, name, password, email, level, login, recommend) values(?, ?, ?, ?, ?, ?, ?)",
                 user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
