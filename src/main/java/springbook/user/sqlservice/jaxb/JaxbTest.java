@@ -19,7 +19,7 @@ public class JaxbTest {
 
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
-        Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(getClass().getResourceAsStream("springbook/user/sqlservice/jaxb/sqlmap.xml"));
+        Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(getClass().getResourceAsStream("/sqlmap.xml"));
 
         List<SqlType> sqlList = sqlmap.getSql();
 
