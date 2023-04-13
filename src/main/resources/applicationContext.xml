@@ -30,6 +30,8 @@
 
     <bean id="sqlService" class="springbook.user.sqlservice.XmlSqlService">
         <property name="sqlMapFile" value="/sqlmap.xml"/>
+        <property name="sqlReader" ref="sqlService"/>
+        <property name="sqlRegistry" ref="sqlService"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
