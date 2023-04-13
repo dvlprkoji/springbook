@@ -4,6 +4,7 @@ import springbook.user.dao.UserDao;
 import springbook.user.sqlservice.jaxb.SqlType;
 import springbook.user.sqlservice.jaxb.Sqlmap;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -13,14 +14,25 @@ import java.util.Map;
 
 public class XmlSqlService implements SqlService {
 
-    private Map<String, String> sqlMap = new HashMap<String, String>();
+    private String sqlMapFile;
 
-    public XmlSqlService() throws JAXBException {
+    private Map<String, String> sqlMap;
+
+    public XmlSqlService() {
+        sqlMap = new HashMap<String, String>();
+    }
+
+    public void setSqlMapFile(String sqlMapFile) {
+        this.sqlMapFile = sqlMapFile;
+    }
+
+    @PostConstruct
+    public void loadSql() {
         String contextPath = Sqlmap.class.getPackage().getName();
         try{
             JAXBContext context = JAXBContext.newInstance(contextPath);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            InputStream is = UserDao.class.getResourceAsStream("/sqlmap.xml");
+            InputStream is = UserDao.class.getResourceAsStream(this.sqlMapFile);
             Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(is);
 
             for (SqlType sql : sqlmap.getSql()) {
