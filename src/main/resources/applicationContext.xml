@@ -28,6 +28,10 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="springbook.user.sqlservice.jaxb"/>
+    </bean>
+
     <bean id="sqlService" class="springbook.user.sqlservice.DefaultSqlService">
     </bean>
 
