@@ -16,6 +16,8 @@ public class OxmSqlService implements SqlService {
 
     private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
     private SqlRegistry sqlRegistry = new HashMapSqlRegistry();
+    private BaseSqlService baseSqlService = new BaseSqlService();
+
 
     public void setUnmarshaller(Unmarshaller unmarshaller) {
         this.oxmSqlReader.setUnmarshaller(unmarshaller);
@@ -31,20 +33,16 @@ public class OxmSqlService implements SqlService {
 
     @PostConstruct
     private void loadSql() {
-        oxmSqlReader.read(sqlRegistry);
+        baseSqlService.setSqlReader(this.oxmSqlReader);
+        baseSqlService.setSqlRegistry(this.sqlRegistry);
+        baseSqlService.loadSql();
     }
 
     @Override
-    public String getSql(String key) throws SqlRetrievalFailureException {
-
-        String sql = sqlRegistry.findSql(key);
-
-        if (sql == null) {
-            throw new SqlRetrievalFailureException(key + "에 대한 SQL을 찾을 수 없습니다");
-        }
-        else return sql;
+    public String getSql(String key){
+        return this.baseSqlService.getSql(key);
     }
-
+    
 
     private class OxmSqlReader implements SqlReader{
 

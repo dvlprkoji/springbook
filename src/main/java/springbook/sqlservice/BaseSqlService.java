@@ -1,7 +1,6 @@
 package springbook.sqlservice;
 
 import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBException;
 
 public class BaseSqlService implements SqlService {
 
@@ -17,7 +16,7 @@ public class BaseSqlService implements SqlService {
     }
 
     @PostConstruct
-    public void loadSql() throws JAXBException {
+    public void loadSql() {
         this.sqlReader.read(this.sqlRegistry);
     }
 
