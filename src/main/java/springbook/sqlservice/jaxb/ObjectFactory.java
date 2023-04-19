@@ -6,7 +6,7 @@
 //
 
 
-package springbook.user.sqlservice.jaxb;
+package springbook.sqlservice.jaxb;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

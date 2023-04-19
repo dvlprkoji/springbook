@@ -4,12 +4,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
-import springbook.user.sqlservice.SqlService;
+import springbook.sqlservice.SqlService;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
-import java.util.Map;
 
 
 public class UserDaoJdbc implements UserDao{

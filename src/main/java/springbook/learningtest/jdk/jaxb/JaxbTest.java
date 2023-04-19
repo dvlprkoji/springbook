@@ -1,8 +1,8 @@
 package springbook.learningtest.jdk.jaxb;
 
 import org.junit.Test;
-import springbook.user.sqlservice.jaxb.SqlType;
-import springbook.user.sqlservice.jaxb.Sqlmap;
+import springbook.sqlservice.jaxb.SqlType;
+import springbook.sqlservice.jaxb.Sqlmap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

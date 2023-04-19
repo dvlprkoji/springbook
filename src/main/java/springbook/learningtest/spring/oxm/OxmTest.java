@@ -1,7 +1,6 @@
 package springbook.learningtest.spring.oxm;
 
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,8 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import springbook.user.sqlservice.jaxb.SqlType;
-import springbook.user.sqlservice.jaxb.Sqlmap;
+import springbook.sqlservice.jaxb.SqlType;
+import springbook.sqlservice.jaxb.Sqlmap;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;

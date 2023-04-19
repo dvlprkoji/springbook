@@ -1,8 +1,8 @@
-package springbook.user.sqlservice;
+package springbook.sqlservice;
 
 import springbook.user.dao.UserDao;
-import springbook.user.sqlservice.jaxb.SqlType;
-import springbook.user.sqlservice.jaxb.Sqlmap;
+import springbook.sqlservice.jaxb.SqlType;
+import springbook.sqlservice.jaxb.Sqlmap;
 
 import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
@@ -39,7 +39,7 @@ public class XmlSqlService implements SqlService, SqlRegistry, SqlReader {
     }
 
     @PostConstruct
-    public void loadSql() {
+    public void loadSql() throws JAXBException {
         this.sqlReader.read(sqlRegistry);
     }
 

@@ -1,4 +1,4 @@
-package springbook.user.sqlservice;
+package springbook.sqlservice;
 
 public class DefaultSqlService extends BaseSqlService {
     public DefaultSqlService() {

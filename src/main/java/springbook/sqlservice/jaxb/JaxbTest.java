@@ -1,4 +1,4 @@
-package springbook.user.sqlservice.jaxb;
+package springbook.sqlservice.jaxb;
 
 import org.junit.Test;
 
