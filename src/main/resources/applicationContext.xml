@@ -32,8 +32,12 @@
         <property name="contextPath" value="springbook.sqlservice.jaxb"/>
     </bean>
 
+    <bean id="sqlRegistry" class="springbook.sqlservice.updatable.ConcurrentHashMapSqlRegistry"></bean>
+
     <bean id="sqlService" class="springbook.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
+
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
