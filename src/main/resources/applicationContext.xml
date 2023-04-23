@@ -3,14 +3,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/c"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
             http://www.springframework.org/schema/aop
             http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
             http://www.springframework.org/schema/tx
-            http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+            http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+            http://www.springframework.org/schema/jdbc
+            http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-3.0.xsd
         ">
@@ -32,7 +35,9 @@
         <property name="contextPath" value="springbook.sqlservice.jaxb"/>
     </bean>
 
-    <bean id="sqlRegistry" class="springbook.sqlservice.updatable.ConcurrentHashMapSqlRegistry"></bean>
+    <bean id="sqlRegistry" class="springbook.issuetracker.sqlservice.updatable.EmbeddedDbSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase"/>
+    </bean>
 
     <bean id="sqlService" class="springbook.sqlservice.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
@@ -61,10 +66,10 @@
 
     <tx:annotation-driven/>
 
-    <context:annotation-config/>
-
     <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-        <jdbc:script location="classpath:schema.sql"/>
+        <jdbc:script location="classpath:sqlRegistrySchema.sql"/>
     </jdbc:embedded-database>
+
+
 
 </beans>

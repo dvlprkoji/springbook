@@ -1,15 +1,15 @@
 package springbook.learningtest.spring.embeddeddb;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
 public class SimpleJdbcTemplate extends JdbcTemplate {
 
-    public SimpleJdbcTemplate(EmbeddedDatabase db) {
-        super(db);
+    public SimpleJdbcTemplate(DataSource dataSource) {
+        super(dataSource);
     }
 
     public Object queryForInt(String sql) {
@@ -20,7 +20,7 @@ public class SimpleJdbcTemplate extends JdbcTemplate {
         return super.queryForList(sql);
     }
 
-    public void update(String sql, String key, String value) {
-        super.update(sql, key, value);
+    public int update(String sql, String key, String value) {
+        return super.update(sql, key, value);
     }
 }
