@@ -18,6 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import springbook.config.TestApplicationContext;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserLevelUpgradeBasicPolicy;
 import springbook.user.domain.Level;
@@ -36,7 +37,7 @@ import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserServiceTest {
 
     @Autowired
@@ -267,7 +268,7 @@ public class UserServiceTest {
 
 
     @Test
-    @Transactional(readOnly = true)
+    @Transactional
     public void transactionSync() {
         userService.deleteAll();
 
