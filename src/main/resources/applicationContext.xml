@@ -26,50 +26,50 @@
 <!--        <property name="password" value="Springbook!"/>-->
 <!--    </bean>-->
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+<!--    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+<!--        <property name="dataSource" ref="dataSource"/>-->
+<!--    </bean>-->
 
     <!-- sql service -->
-    <bean id="sqlService" class="springbook.sqlservice.OxmSqlService">
-        <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlRegistry" ref="sqlRegistry"/>
-    </bean>
+<!--    <bean id="sqlService" class="springbook.sqlservice.OxmSqlService">-->
+<!--        <property name="unmarshaller" ref="unmarshaller"/>-->
+<!--        <property name="sqlRegistry" ref="sqlRegistry"/>-->
+<!--    </bean>-->
 
-    <bean id="sqlRegistry" class="springbook.issuetracker.sqlservice.updatable.EmbeddedDbSqlRegistry">
-        <property name="dataSource" ref="embeddedDatabase"/>
-    </bean>
+<!--    <bean id="sqlRegistry" class="springbook.issuetracker.sqlservice.updatable.EmbeddedDbSqlRegistry">-->
+<!--        <property name="dataSource" ref="embeddedDatabase"/>-->
+<!--    </bean>-->
 
-    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-        <jdbc:script location="classpath:sqlRegistrySchema.sql"/>
-    </jdbc:embedded-database>
+<!--    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">-->
+<!--        <jdbc:script location="classpath:sqlRegistrySchema.sql"/>-->
+<!--    </jdbc:embedded-database>-->
 
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="springbook.sqlservice.jaxb"/>
-    </bean>
+<!--    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">-->
+<!--        <property name="contextPath" value="springbook.sqlservice.jaxb"/>-->
+<!--    </bean>-->
 
     <!-- aop -->
-    <tx:annotation-driven/>
+<!--    <tx:annotation-driven/>-->
 
     <!-- application components -->
-    <bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
-        <property name="dataSource" ref="dataSource" />
-        <property name="sqlService" ref="sqlService"/>
-    </bean>
+<!--    <bean id="userDao" class="springbook.user.dao.UserDaoJdbc">-->
+<!--        <property name="dataSource" ref="dataSource" />-->
+<!--        <property name="sqlService" ref="sqlService"/>-->
+<!--    </bean>-->
 
-    <bean id="userService" class="springbook.user.service.UserServiceImpl">
-        <property name="userDao" ref="userDao"/>
-        <property name="userLevelUpgradePolicy" ref="userLevelUpgradeEventPolicy"/>
-        <property name="mailSender" ref="mailSender"/>
-    </bean>
+<!--    <bean id="userService" class="springbook.user.service.UserServiceImpl">-->
+<!--        <property name="userDao" ref="userDao"/>-->
+<!--        <property name="userLevelUpgradePolicy" ref="userLevelUpgradeEventPolicy"/>-->
+<!--        <property name="mailSender" ref="mailSender"/>-->
+<!--    </bean>-->
 
-    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService" parent="userService">
-    </bean>
+<!--    <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService" parent="userService">-->
+<!--    </bean>-->
 
-    <bean id="mailSender" class="springbook.user.service.DummyMailSender">
-    </bean>
+<!--    <bean id="mailSender" class="springbook.user.service.DummyMailSender">-->
+<!--    </bean>-->
 
-    <bean id="userLevelUpgradeEventPolicy" class="springbook.user.dao.UserLevelUpgradeBasicPolicy">
-    </bean>
+<!--    <bean id="userLevelUpgradeEventPolicy" class="springbook.user.dao.UserLevelUpgradeBasicPolicy">-->
+<!--    </bean>-->
 
 </beans>
