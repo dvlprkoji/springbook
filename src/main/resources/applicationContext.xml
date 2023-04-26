@@ -18,41 +18,43 @@
             http://www.springframework.org/schema/context/spring-context-3.0.xsd
         ">
 
+    <!-- db -->
+<!--    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >-->
+<!--        <property name="driverClass" value="com.mysql.jdbc.Driver"/>-->
+<!--        <property name="url" value="jdbc:mysql://localhost/springbook"/>-->
+<!--        <property name="username" value="springbook"/>-->
+<!--        <property name="password" value="Springbook!"/>-->
+<!--    </bean>-->
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
-        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost/springbook"/>
-        <property name="username" value="springbook"/>
-        <property name="password" value="Springbook!"/>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
-        <property name="dataSource" ref="dataSource" />
-        <property name="sqlService" ref="sqlService"/>
-    </bean>
-
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="springbook.sqlservice.jaxb"/>
+    <!-- sql service -->
+    <bean id="sqlService" class="springbook.sqlservice.OxmSqlService">
+        <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
 
     <bean id="sqlRegistry" class="springbook.issuetracker.sqlservice.updatable.EmbeddedDbSqlRegistry">
         <property name="dataSource" ref="embeddedDatabase"/>
     </bean>
 
-    <bean id="sqlService" class="springbook.sqlservice.OxmSqlService">
-        <property name="unmarshaller" ref="unmarshaller"/>
-        <property name="sqlRegistry" ref="sqlRegistry"/>
+    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
+        <jdbc:script location="classpath:sqlRegistrySchema.sql"/>
+    </jdbc:embedded-database>
 
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="springbook.sqlservice.jaxb"/>
     </bean>
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+    <!-- aop -->
+    <tx:annotation-driven/>
 
-    <bean id="userLevelUpgradeEventPolicy" class="springbook.user.dao.UserLevelUpgradeBasicPolicy">
-    </bean>
-
-    <bean id="mailSender" class="springbook.user.service.DummyMailSender">
+    <!-- application components -->
+    <bean id="userDao" class="springbook.user.dao.UserDaoJdbc">
+        <property name="dataSource" ref="dataSource" />
+        <property name="sqlService" ref="sqlService"/>
     </bean>
 
     <bean id="userService" class="springbook.user.service.UserServiceImpl">
@@ -64,12 +66,10 @@
     <bean id="testUserService" class="springbook.user.service.UserServiceTest$TestUserService" parent="userService">
     </bean>
 
-    <tx:annotation-driven/>
+    <bean id="mailSender" class="springbook.user.service.DummyMailSender">
+    </bean>
 
-    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-        <jdbc:script location="classpath:sqlRegistrySchema.sql"/>
-    </jdbc:embedded-database>
-
-
+    <bean id="userLevelUpgradeEventPolicy" class="springbook.user.dao.UserLevelUpgradeBasicPolicy">
+    </bean>
 
 </beans>
