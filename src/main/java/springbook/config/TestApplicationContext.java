@@ -1,11 +1,11 @@
 package springbook.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
@@ -18,18 +18,16 @@ import springbook.sqlservice.OxmSqlService;
 import springbook.sqlservice.SqlRegistry;
 import springbook.sqlservice.SqlService;
 import springbook.user.dao.UserDao;
-import springbook.user.dao.UserDaoJdbc;
 import springbook.user.dao.UserLevelUpgradeBasicPolicy;
 import springbook.user.dao.UserLevelUpgradePolicy;
 import springbook.user.service.DummyMailSender;
 import springbook.user.service.UserService;
-import springbook.user.service.UserServiceImpl;
 import springbook.user.service.UserServiceTest;
 import javax.sql.DataSource;
 
 @Configuration
-@ImportResource("/applicationContext.xml")
 @EnableTransactionManagement
+@ComponentScan(basePackages = "springbook.user")
 public class TestApplicationContext {
 
 
@@ -90,29 +88,13 @@ public class TestApplicationContext {
     }
 
     // application components
-    @Bean
-    public UserDao userDao() {
-        UserDaoJdbc userDao = new UserDaoJdbc();
-        userDao.setDataSource(dataSource());
-        userDao.setSqlService(sqlService());
 
-        return userDao;
-    }
-
-    @Bean
-    public UserService userService() {
-        UserServiceImpl userService = new UserServiceImpl();
-        userService.setUserDao(userDao());
-        userService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
-        userService.setMailSender(mailSender());
-
-        return userService;
-    }
+    @Autowired UserDao userDao;
 
     @Bean
     public UserService testUserService() {
         UserServiceTest.TestUserService testUserService = new UserServiceTest.TestUserService();
-        testUserService.setUserDao(userDao());
+        testUserService.setUserDao(this.userDao);
         testUserService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
         testUserService.setMailSender(mailSender());
 
