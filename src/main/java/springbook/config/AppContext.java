@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")
-public class TestApplicationContext {
+public class AppContext {
 
 
     //  db
@@ -90,23 +90,6 @@ public class TestApplicationContext {
     // application components
 
     @Autowired UserDao userDao;
-
-    @Bean
-    public UserService testUserService() {
-        UserServiceTest.TestUserService testUserService = new UserServiceTest.TestUserService();
-        testUserService.setUserDao(this.userDao);
-        testUserService.setUserLevelUpgradePolicy(userLevelUpgradePolicy());
-        testUserService.setMailSender(mailSender());
-
-        return testUserService;
-    }
-
-    @Bean
-    public MailSender mailSender() {
-        DummyMailSender mailSender = new DummyMailSender();
-
-        return mailSender;
-    }
 
     @Bean
     public UserLevelUpgradePolicy userLevelUpgradePolicy() {
