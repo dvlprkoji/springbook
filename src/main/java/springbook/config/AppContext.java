@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springbook.user.dao.UserDao;
@@ -17,9 +19,8 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")
-@Import(SqlServiceContext.class)
+@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class})
 public class AppContext {
-
 
     //  db
     @Bean
@@ -43,12 +44,20 @@ public class AppContext {
     }
 
     // application components
-    @Autowired UserDao userDao;
+    @Autowired
+    UserDao userDao;
 
     @Bean
     public UserLevelUpgradePolicy userLevelUpgradePolicy() {
         UserLevelUpgradeBasicPolicy userLevelUpgradePolicy = new UserLevelUpgradeBasicPolicy();
 
         return userLevelUpgradePolicy;
+    }
+
+    @Bean
+    public MailSender mailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("mail.companykoji.com");
+        return mailSender;
     }
 }

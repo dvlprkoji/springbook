@@ -11,6 +11,7 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.*;
 import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppContext.class)
 public class UserServiceTest {
