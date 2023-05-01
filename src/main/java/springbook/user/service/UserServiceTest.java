@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
@@ -53,6 +54,8 @@ public class UserServiceTest {
     MailSender mailSender;
     @Autowired
     ApplicationContext context;
+    @Autowired
+    DefaultListableBeanFactory bf;
 
     List<User> users;
 
@@ -149,6 +152,13 @@ public class UserServiceTest {
                 new User("koji4", "코지4", "p4", "koji@gmail.com", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
                 new User("koji5", "코지5", "p5", "koji@gmail.com", Level.GOLD, 100, Integer.MAX_VALUE)
         );
+    }
+
+    @Test
+    public void beans() {
+        for (String n : bf.getBeanDefinitionNames()) {
+            System.out.println(n + "\t" + bf.getBean(n).getClass().getName());
+        }
     }
 
     @Test

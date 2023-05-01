@@ -1,10 +1,7 @@
 package springbook.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -14,12 +11,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springbook.user.dao.UserDao;
 import springbook.user.dao.UserLevelUpgradeBasicPolicy;
 import springbook.user.dao.UserLevelUpgradePolicy;
+import springbook.user.service.DummyMailSender;
+import springbook.user.service.UserService;
+import springbook.user.service.UserServiceTest;
+
 import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = "springbook.user")
-@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class})
+@Import({SqlServiceContext.class})
 public class AppContext {
 
     //  db
@@ -54,10 +55,35 @@ public class AppContext {
         return userLevelUpgradePolicy;
     }
 
-    @Bean
-    public MailSender mailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("mail.companykoji.com");
-        return mailSender;
+
+    @Configuration
+    @ComponentScan(basePackages = "springbook.user")
+    @Profile("test")
+    public static class TestAppContext {
+
+        @Autowired
+        UserDao userDao;
+
+        @Bean
+        public UserService testUserService() {
+            return new UserServiceTest.TestUserService();
+        }
+
+        @Bean
+        public MailSender mailSender() {
+            return new DummyMailSender();
+        }
+    }
+
+    @Configuration
+    @Profile("production")
+    public static class ProductionAppContext {
+
+        @Bean
+        public MailSender mailSender() {
+            JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+            mailSender.setHost("localhost");
+            return mailSender;
+        }
     }
 }
