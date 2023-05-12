@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -38,6 +39,16 @@ public class App {
         reader.loadBeanDefinitions("/genericApplicationContext.xml");
 
         ac.refresh();
+
+        Hello hello = ac.getBean("hello", Hello.class);
+        hello.print();
+
+        assertThat(ac.getBean("printer").toString(), is("Hello Spring"));
+    }
+
+    @Test
+    public void genericXmlApplicationContext() {
+        GenericApplicationContext ac = new GenericXmlApplicationContext("/genericApplicationContext.xml");
 
         Hello hello = ac.getBean("hello", Hello.class);
         hello.print();
