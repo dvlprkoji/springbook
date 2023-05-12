@@ -2,6 +2,8 @@ package springbook.learningtest.spring.ioc;
 
 import org.junit.Test;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -27,5 +29,19 @@ public class App {
 
         assertThat(hello1, is(not(hello2)));
         assertThat(ac.getBeanFactory().getBeanDefinitionCount(), is(2));
+    }
+
+    @Test
+    public void genericApplicationContext() {
+        GenericApplicationContext ac = new GenericApplicationContext();
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(ac);
+        reader.loadBeanDefinitions("/genericApplicationContext.xml");
+
+        ac.refresh();
+
+        Hello hello = ac.getBean("hello", Hello.class);
+        hello.print();
+
+        assertThat(ac.getBean("printer").toString(), is("Hello Spring"));
     }
 }
