@@ -4,6 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="hello" class="springbook.learningtest.spring.ioc.Hello">
+        <property name="name" value="Spring"/>
         <property name="printer" ref="printer"/>
     </bean>
 

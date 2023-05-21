@@ -4,9 +4,12 @@ import org.junit.Test;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import springbook.learningtest.spring.ioc.bean.AnnotatedHello;
+import springbook.learningtest.spring.ioc.bean.AnnotatedHelloConfig;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -71,4 +74,22 @@ public class App {
         assertThat(hello.sayHello(), is("Hello Child"));
 
     }
+
+    @Test
+    public void simpleBeanScanning() {
+        AnnotationConfigApplicationContext ctx =
+                new AnnotationConfigApplicationContext("springbook.learningtest.spring.ioc.bean");
+
+        AnnotationConfigApplicationContext ctx2 =
+                new AnnotationConfigApplicationContext(AnnotatedHelloConfig.class);
+
+        AnnotatedHello annotatedHello = ctx.getBean("annotatedHello", AnnotatedHello.class);
+        AnnotatedHello annotatedHello2 = ctx2.getBean("annotatedHello", AnnotatedHello.class);
+
+        assertThat(annotatedHello, is(notNullValue()));
+        assertThat(annotatedHello2, is(notNullValue()));
+    }
+
+
+
 }
